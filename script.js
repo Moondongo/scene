@@ -10,7 +10,7 @@ function init(){
     createCamera();
     createRenderer();
     createControls();
-    cargarModelo('3dmodel/bankito/estebankito.gltf');
+    cargarModelo('3dmodel/bankito/Banco.gltf');
     lighting();
     render();
 }
