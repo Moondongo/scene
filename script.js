@@ -18,6 +18,7 @@ function init(){
 function createScene(){
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x352847);
+    loadHDRI();
 }
 function createCamera(){
     camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
@@ -60,4 +61,14 @@ function lighting(){
 
     const ambient = new THREE.AmbientLight(0x352847);
     scene.add(ambient);
+}
+
+function loadHDRI(){
+    const loader = new THREE.TextureLoader();
+    loader.load('hdri/forest.jpg', texture =>{
+        const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+        rt.fromEquirectangularTexture(renderer, texture);
+        scene.background = rt;
+        render();
+    });
 }
