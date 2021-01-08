@@ -10,21 +10,22 @@ function init(){
     createCamera();
     createRenderer();
     createControls();
-    cargarModelo('3dmodel/cube/untitled.gltf');
-    cargarModelo('3dmodel/sphere/sphere.gltf');
+    cargarModelo('3dmodel/bankito/estebankito.gltf');
+    lighting();
     render();
 }
 
 function createScene(){
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x151826);
+    scene.background = new THREE.Color(0x352847);
 }
 function createCamera(){
     camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
-    camera.position.z = 5;
+    camera.position.z = 6;
+    camera.position.y = 5;
 }
 function createRenderer(){
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({antialias:true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 }
@@ -48,4 +49,15 @@ function cargarModelo(patch){
     }, undefined, error =>{
         console.error(error);
     });
+}
+
+function lighting(){
+    const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.1);
+    scene.add(directionalLight);
+
+    const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.8);
+    scene.add(light);
+
+    const ambient = new THREE.AmbientLight(0x352847);
+    scene.add(ambient);
 }
