@@ -38,7 +38,7 @@ function createCamera(){
 }
 function createRenderer(){
     renderer = new THREE.WebGLRenderer({canvas});
-    //renderer.setPixelRatio(0.5);
+    renderer.setPixelRatio(0.8);
     pmremGenerator = new THREE.PMREMGenerator( renderer );
 	pmremGenerator.compileEquirectangularShader();
 }
@@ -82,7 +82,7 @@ function loadHDRI(){
         .setPath('hdri/')
         .load('studio.hdr', texture =>{
             const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-            scene.background = envMap;
+            //scene.background = envMap;
             scene.environment = envMap;
             texture.dispose();
             pmremGenerator.dispose();
