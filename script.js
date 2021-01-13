@@ -2,21 +2,23 @@ import * as THREE from './modulos/three.module.js';
 import {OrbitControls} from './modulos/OrbitControls.js';
 import {GLTFLoader} from './modulos/GLTFLoader.js';
 import {RGBELoader} from './modulos/RGBELoader.js';
+
 let scene, camera, renderer, controls;
 let pmremGenerator;
 let loadingManager;
+const canvas = document.getElementById('canvas');
+
 init();
 function init(){
     createScene();
-    createCamera();
     createRenderer();
+    createCamera();
     loadManager();
     createControls();
-    //cargarModelo('3dmodel/smile/WaterBottle.glb');
     cargarModelo('3dmodel/horno/horno.glb');
     lighting();
     render();
-    window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('resize', render, false);
 }
 
 function createScene(){
@@ -25,15 +27,18 @@ function createScene(){
     loadHDRI();
 }
 function createCamera(){
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
-    camera.position.z = 2;
+    const fov = 75
+    const aspect = renderer.domElement.clientWidth/renderer.domElement.clientHeight;
+    const near = 0.1;
+    const far = 5;
+    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.z = 2.5;
     camera.position.y = 0.9;
     camera.position.x = 1;
 }
 function createRenderer(){
-    renderer = new THREE.WebGLRenderer({antialias:true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    renderer = new THREE.WebGLRenderer({canvas});
+    //renderer.setPixelRatio(0.5);
     pmremGenerator = new THREE.PMREMGenerator( renderer );
 	pmremGenerator.compileEquirectangularShader();
 }
@@ -47,6 +52,7 @@ function createControls(){
 }
 function render(){
     renderer.render(scene, camera);
+    onWindowResize();
 }
 
 function cargarModelo(patch){
@@ -84,14 +90,14 @@ function loadHDRI(){
         });
 }
 
-function onWindowResize() {
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize( width, height );
-    render();
+function onWindowResize() {
+    if(resizeRendererToDisplaySize()){
+        const width = renderer.domElement.clientWidth;
+        const height = renderer.domElement.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    }
 }
 
 function loadManager(){
@@ -102,4 +108,15 @@ function loadManager(){
             e.target.remove();
         });
     });
+}
+
+function resizeRendererToDisplaySize() {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+        renderer.setSize(width, height, false);
+    }
+    return needResize;
 }
